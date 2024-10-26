@@ -16,7 +16,6 @@ class TestRecipe(unittest.TestCase):
             Ingredient(name='Растительное масло', raw_weight=50, weight=50, cost=5.75, calorific=450),
             Ingredient(name='Сливочное масло', raw_weight=25, weight=25, cost=27.5, calorific=187.5)
         ]
-
         self.pancakes_recipe = Recipe("Блины", self.pancakes_ingredients)
 
         self.carbonara_ingredients = [
@@ -29,12 +28,12 @@ class TestRecipe(unittest.TestCase):
             Ingredient(name='Соль', raw_weight=7, weight=7, cost=0.15, calorific=0),
             Ingredient(name='Перец чёрный молотый', raw_weight=3, weight=3, cost=8, calorific=7.5)
         ]
-
         self.carbonara_recipe = Recipe("Карбонара", self.carbonara_ingredients)
 
     def test_calculate_weight_pancakes(self):
-        self.assertEqual(self.pancakes_recipe.calculate_weight(is_raw=True), 1087)
-        self.assertEqual(self.pancakes_recipe.calculate_weight(is_raw=False), 1087)
+        for is_raw, expected_weight in [(True, 1087), (False, 1087)]:
+            with self.subTest(is_raw=is_raw):
+                self.assertEqual(self.pancakes_recipe.calculate_weight(is_raw=is_raw), expected_weight)
 
     def test_calculate_cost_pancakes(self):
         self.assertEqual(self.pancakes_recipe.calculate_cost(), 158.6)
@@ -43,8 +42,9 @@ class TestRecipe(unittest.TestCase):
         self.assertEqual(self.pancakes_recipe.calculate_calorific(), 2077.5)
 
     def test_calculate_weight_carbonara(self):
-        self.assertEqual(self.carbonara_recipe.calculate_weight(is_raw=True), 835)
-        self.assertEqual(self.carbonara_recipe.calculate_weight(is_raw=False), 1165)
+        for is_raw, expected_weight in [(True, 835), (False, 1165)]:
+            with self.subTest(is_raw=is_raw):
+                self.assertEqual(self.carbonara_recipe.calculate_weight(is_raw=is_raw), expected_weight)
 
     def test_calculate_cost_carbonara(self):
         self.assertEqual(self.carbonara_recipe.calculate_cost(), 388.81)
