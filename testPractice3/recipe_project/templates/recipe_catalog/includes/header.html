@@ -1,0 +1,7 @@
+<header class="w3-container w3-green w3-top" style="border-bottom: 1px solid white;">
+    <h2><b>ChefPro</b></h2>
+    <nav class="w3-bar">
+        <a class="w3-bar-item w3-button w3-hover-red {% if request.path == '/' %}active{% endif %}" href="/">Главная страница</a>
+        <a class="w3-bar-item w3-button w3-hover-red {% if request.path == '/about/' %}active{% endif %}" href="/about/">О сайте</a>
+    </nav>
+</header>

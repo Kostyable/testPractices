@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="Описание страницы">
+        <title>ChefPro - {{title}}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    </head>
+    <body class="w3-dark-gray">
+        {% include 'recipe_catalog/includes/header.html' %}
+        <main class="w3-padding" style="margin-top: 100px; margin-bottom: 80px;">
+            <h1 class="w3-center w3-text-white"><b>{{ title }}</b></h1>
+            <div class="w3-text-white">{{ desc }}</div>
+            <h3 class="w3-text-light-grey w3-center">Ингредиенты</h3>
+            <div class="w3-responsive">
+                <table class="w3-table w3-bordered w3-striped w3-hoverable" style="background-color: #ff8811;">
+                    <thead>
+                        <tr class="w3-dark">
+                            <th>Название</th>
+                            <th>Вес сырого продукта (г)</th>
+                            <th>Вес готового продукта (г)</th>
+                            <th>Стоимость (₽)</th>
+                            <th>Калорийность (ккал)</th>
+                        </tr>
+                    </thead>
+                    <tbody style="color:white;">
+                        {% for ingredient in ingredients %}
+                            <tr style="{% cycle 'background-color: #333333;' 'background-color: black;' %}">
+                                <td>{{ ingredient.name }}</td>
+                                <td>{{ ingredient.raw_weight }}</td>
+                                <td>{{ ingredient.weight }}</td>
+                                <td>{{ ingredient.cost }}</td>
+                                <td>{{ ingredient.calorific }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        {% include 'recipe_catalog/includes/footer.html' %}
+    </body>
+</html>
