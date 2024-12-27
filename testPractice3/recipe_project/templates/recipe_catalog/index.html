@@ -7,6 +7,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
         <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                min-height: calc(100vh - 175px);
+            }
+
             .w3-bar-item.active {
                 background-color: #ff8811;
             }
@@ -14,7 +20,7 @@
     </head>
     <body class="w3-dark-gray">
         {% include 'recipe_catalog/includes/header.html' %}
-        <main class="w3-padding" style="margin-top: 100px; margin-bottom: 60px;">
+        <main class="w3-padding" style="margin-top: 105px; margin-bottom: 70px;">
             <h1 class="w3-center">Рецепты</h1>
             <div class="w3-center">Выберите блюдо по вашему вкусу!</div>
             <div class="w3-row-padding" style="margin-top: 30px;">
