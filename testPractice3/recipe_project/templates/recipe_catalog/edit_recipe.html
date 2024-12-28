@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Редактирование рецепта">
+    <title>ChefPro - Редактирование рецепта</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                min-height: calc(100vh - 175px);
+            }
+
+            .w3-bar-item.active {
+                background-color: #FF8811;
+            }
+
+            .w3-button.blue {
+                background-color: #008CBA;
+            }
+
+            .w3-button.blue:hover {
+                background-color: #FF5555;
+            }
+
+            .disabled-button {
+                pointer-events: none;
+                opacity: 0.6;
+            }
+
+            .form-container {
+                max-width: 800px;
+                margin: 0 auto;
+                background-color: #444;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+                margin-top: 50px;
+            }
+
+            .form-container h1 {
+                text-align: center;
+                color: #FF8811;
+                margin-bottom: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-group label {
+                font-weight: bold;
+                color: #fff; /* Белые буквы для label */
+            }
+
+            .ingredient-select, .ingredient-quantity {
+                background-color: #333;
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+            }
+
+            .ingredient-select {
+                max-width: 200px;
+                width: 100%;
+            }
+
+            .ingredient-quantity {
+                width: 60px;
+                padding: 5px;
+                margin-left: 10px;
+            }
+
+            .form-container .w3-button {
+                background-color: #FF8811;
+                margin-bottom: 10px;
+                color: white;
+                width: 100%;
+            }
+
+            .form-container .w3-button:hover {
+                color: #FFFFFF !important;
+                background-color: #f44336 !important;
+            }
+
+            .form-container input, .form-container select {
+                background-color: #333; /* Темный фон */
+                color: white; /* Белый текст */
+                border: 1px solid #ccc; /* Светлый бордер */
+                border-radius: 5px;
+                padding: 10px;
+                width: 100%;
+            }
+
+            .form-container input[type="number"] {
+                max-width: 100px;
+            }
+
+            .form-container select {
+                max-width: 520px;
+            }
+
+    </style>
+</head>
+<body class="w3-dark-gray">
+    {% include 'recipe_catalog/includes/header.html' %}
+
+    <main class="w3-padding" style="margin-top: 105px; margin-bottom: 70px;">
+        <div class="form-container">
+            <h1>Редактировать рецепт</h1>
+
+            <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <!-- Скрытое поле для хранения удаленных ингредиентов -->
+    <input type="hidden" id="deleted-ingredients" name="deleted_ingredients" value="">
+
+    <!-- Ингредиенты -->
+    <div id="ingredients-container">
+        {% for ri in recipe.recipeingredient_set.all %}
+            <div class="ingredient-row" id="ingredient-row-{{ forloop.counter0 }}">
+                <div class="form-group">
+                    <label for="ingredient_{{ forloop.counter0 }}">Ингредиент {{ forloop.counter }}</label>
+                    <select name="ingredient_{{ forloop.counter0 }}" id="ingredient_{{ forloop.counter0 }}" class="ingredient-select">
+                        {% for ingredient in ingredients %}
+                            <option value="{{ ingredient.id }}" {% if ingredient.id == ri.ingredient.id %} selected {% endif %}>
+                                {{ ingredient.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <input type="number" name="quantity_{{ forloop.counter0 }}" class="ingredient-quantity" value="{{ ri.quantity }}" min="1">
+                </div>
+                <!-- Кнопка удаления -->
+                <button type="button" class="w3-button red remove-ingredient" data-row-id="ingredient-row-{{ forloop.counter0 }}" data-ingredient-id="{{ ri.id }}">Удалить</button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="button" id="add-ingredient" class="w3-button">Добавить ингредиент</button>
+
+    <div class="form-group">
+        <button type="submit" class="w3-button">Сохранить рецепт</button>
+    </div>
+</form>
+        </div>
+    </main>
+
+    {% include 'recipe_catalog/includes/footer.html' %}
+
+    <script>
+        let ingredientCount = {{ recipe.recipeingredient_set.count }};
+
+// Список удаленных ингредиентов
+const deletedIngredients = document.getElementById("deleted-ingredients");
+
+// Обработчик для добавления нового ингредиента
+document.getElementById("add-ingredient").addEventListener("click", function () {
+    var container = document.getElementById("ingredients-container");
+
+    var newRow = document.createElement("div");
+    newRow.classList.add("ingredient-row");
+    newRow.id = "ingredient-row-" + ingredientCount;
+
+    var formGroup = document.createElement("div");
+    formGroup.classList.add("form-group");
+
+    var label = document.createElement("label");
+    label.setAttribute("for", "ingredient_" + ingredientCount);
+    label.textContent = "Ингредиент " + (ingredientCount + 1) + " ";
+
+    var select = document.createElement("select");
+    select.name = "ingredient_" + ingredientCount;
+    select.id = "ingredient_" + ingredientCount;
+    select.classList.add("ingredient-select");
+
+    {% for ingredient in ingredients %}
+        var option = document.createElement("option");
+        option.value = "{{ ingredient.id }}";
+        option.textContent = "{{ ingredient.name }}";
+        select.appendChild(option);
+    {% endfor %}
+
+    var input = document.createElement("input");
+    input.type = "number";
+    input.name = "quantity_" + ingredientCount;
+    input.classList.add("ingredient-quantity");
+    input.value = 1;
+    input.min = 1;
+
+    var removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.classList.add("w3-button", "red", "remove-ingredient");
+    removeButton.textContent = "Удалить";
+
+    removeButton.addEventListener("click", function () {
+        var row = document.getElementById(newRow.id);
+        row.parentNode.removeChild(row);
+    });
+
+    formGroup.appendChild(label);
+    formGroup.appendChild(select);
+    formGroup.appendChild(input);
+    formGroup.appendChild(removeButton);
+
+    newRow.appendChild(formGroup);
+    container.appendChild(newRow);
+
+    ingredientCount++;
+});
+
+// Обработчик для удаления существующих ингредиентов
+document.querySelectorAll(".remove-ingredient").forEach(function (button) {
+    button.addEventListener("click", function () {
+        var row = document.getElementById(this.dataset.rowId);
+        row.parentNode.removeChild(row);
+
+        // Добавление ID ингредиента в скрытый список
+        const ingredientId = this.dataset.ingredientId;
+        if (ingredientId) {
+            const currentValue = deletedIngredients.value;
+            deletedIngredients.value = currentValue ? currentValue + "," + ingredientId : ingredientId;
+        }
+    });
+});
+
+    </script>
+</body>
+</html>

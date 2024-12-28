@@ -14,7 +14,20 @@
             }
 
             .w3-bar-item.active {
-                background-color: #ff8811;
+                background-color: #FF8811;
+            }
+
+            .w3-button.blue {
+                background-color: #008CBA;
+            }
+
+            .w3-button.blue:hover {
+                background-color: #FF5555;
+            }
+
+            .disabled-button {
+                pointer-events: none;
+                opacity: 0.6;
             }
         </style>
     </head>
@@ -23,17 +36,36 @@
         <main class="w3-padding" style="margin-top: 105px; margin-bottom: 70px;">
             <h1 class="w3-center">Рецепты</h1>
             <div class="w3-center">Выберите блюдо по вашему вкусу!</div>
+            <div class="w3-row-padding w3-margin-top">
+                <div class="w3-center">
+                    {% if user.is_authenticated %}
+                        <div class="w3-center w3-margin-top">
+                            <a href="{% url 'create_recipe' %}" class="w3-button w3-blue w3-hover-red">Добавить рецепт</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
             <div class="w3-row-padding" style="margin-top: 30px;">
                 {% for recipe in recipes %}
                     <div class="w3-third w3-margin-bottom">
                         <div class="w3-card w3-hover-shadow w3-padding" style="background-color: #ff8811;">
-                            <div class="w3-padding-small" style="margin-top: 10px;">
-                                <img src="{{ recipe.img.url }}" alt="{{ recipe.name }}" class="w3-image" style="width: 100%; height: 200px; object-fit: cover;">
-                            </div>
+                            {% if recipe.img %}
+                                <div class="w3-padding-small" style="margin-top: 10px;">
+                                    <img src="{{ recipe.img.url }}" alt="{{ recipe.name }}" class="w3-image" style="width: 100%; height: 200px; object-fit: cover;">
+                                </div>
+                            {% endif %}
                             <div class="w3-container w3-padding">
                                 <h3 class="w3-center"><b>{{ recipe.name }}</b></h3>
                                 <p class="w3-center">Время готовки: {{ recipe.cooking_time|time:"H:i" }}</p>
-                                <p class="w3-margin-top w3-center"><a href="{% url 'recipe' pk=recipe.pk %}" class="w3-button w3-hover-red"><i>Подробнее</i></a></p>
+                                <p class="w3-margin-top w3-center">
+                                    <a href="{% url 'recipe' pk=recipe.pk %}" class="w3-button w3-hover-red">Подробнее</a>
+                                </p>
+                                {% if user.is_authenticated and recipe.author == user %}
+                                    <div class="w3-center w3-margin-top">
+                                        <a href="{% url 'edit_recipe' pk=recipe.pk %}" class="w3-button w3-blue w3-hover-red">Редактировать</a>
+                                        <a href="{% url 'delete_recipe' pk=recipe.pk %}" class="w3-button w3-blue w3-hover-red" onclick="return confirm('Вы уверены, что хотите удалить рецепт?');">Удалить</a>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

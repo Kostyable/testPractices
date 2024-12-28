@@ -1,54 +1,68 @@
 <!DOCTYPE html>
 <html lang="ru">
-    <head>
-        <meta charset="utf-8">
-        <meta name="description" content="Описание страницы">
-        <title>ChefPro - {{title}}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <style>
-            html, body {
-                margin: 0;
-                padding: 0;
-                min-height: calc(100vh - 175px);
-            }
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Описание страницы">
+    <title>ChefPro - {{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: calc(100vh - 175px);
+        }
 
-            .w3-bar-item.active {
-                background-color: #ff8811;
-            }
-        </style>
-    </head>
-    <body class="w3-dark-gray">
-        {% include 'recipe_catalog/includes/header.html' %}
-        <main class="w3-padding" style="margin-top: 105px; margin-bottom: 70px;">
-            <h1 class="w3-center w3-text-white"><b>{{ title }}</b></h1>
-            <div class="w3-text-white">{{ desc }}</div>
-            <h3 class="w3-text-light-grey w3-center">Ингредиенты</h3>
-            <div class="w3-responsive" style="margin-bottom: 15px;">
-                <table class="w3-table w3-bordered w3-striped w3-hoverable" style="background-color: #ff8811;">
-                    <thead>
-                        <tr class="w3-dark">
-                            <th>Название</th>
-                            <th>Вес сырого продукта (г)</th>
-                            <th>Вес готового продукта (г)</th>
-                            <th>Стоимость (₽)</th>
-                            <th>Калорийность (ккал)</th>
+        .w3-bar-item.active {
+            background-color: #ff8811;
+        }
+    </style>
+</head>
+<body class="w3-dark-gray">
+    {% include 'recipe_catalog/includes/header.html' %}
+    <main class="w3-padding" style="margin-top: 105px; margin-bottom: 70px;">
+        <h1 class="w3-center w3-text-white"><b>{{ title }}</b></h1>
+        <div class="w3-text-white">{{ desc }}</div>
+        <h3 class="w3-text-light-grey w3-center">Ингредиенты</h3>
+        <div class="w3-responsive" style="margin-bottom: 15px;">
+            <table class="w3-table w3-bordered w3-striped w3-hoverable" style="background-color: #ff8811;">
+                <thead>
+                    <tr class="w3-dark">
+                        <th>Название</th>
+                        <th class="w3-center">Количество</th>
+                        <th class="w3-center">Вес сырого продукта (г)</th>
+                        <th class="w3-center">Вес готового продукта (г)</th>
+                        <th class="w3-center">Стоимость (₽)</th>
+                        <th class="w3-center">Калорийность (ккал)</th>
+                    </tr>
+                </thead>
+                <tbody style="color:white;">
+                    {% for ingredient in ingredients %}
+                        <tr style="{% cycle 'background-color: #333333;' 'background-color: black;' %}">
+                            <td>{{ ingredient.name }}</td>
+                            <td class="w3-center">{{ ingredient.quantity }}</td>
+                            <td class="w3-center">{{ ingredient.raw_weight|floatformat:2 }}</td>
+                            <td class="w3-center">{{ ingredient.processed_weight|floatformat:2 }}</td>
+                            <td class="w3-center">{{ ingredient.cost|floatformat:2 }}</td>
+                            <td class="w3-center">{{ ingredient.calorific|floatformat:2 }}</td>
                         </tr>
-                    </thead>
-                    <tbody style="color:white;">
-                        {% for ingredient in ingredients %}
-                            <tr style="{% cycle 'background-color: #333333;' 'background-color: black;' %}">
-                                <td>{{ ingredient.name }}</td>
-                                <td>{{ ingredient.raw_weight }}</td>
-                                <td>{{ ingredient.weight }}</td>
-                                <td>{{ ingredient.cost }}</td>
-                                <td>{{ ingredient.calorific }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </main>
-        {% include 'recipe_catalog/includes/footer.html' %}
-    </body>
+                    {% endfor %}
+                </tbody>
+                <tfoot class="w3-dark">
+                    <tr>
+                        <th colspan="2">Итого:</th>
+                        <th class="w3-center">{{ total_raw_weight|floatformat:2 }}</th>
+                        <th class="w3-center">{{ total_processed_weight|floatformat:2 }}</th>
+                        <th class="w3-center">{{ total_cost|floatformat:2 }}</th>
+                        <th class="w3-center">{{ total_calories|floatformat:2 }}</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="w3-center">
+            <a href="{% url 'create_ingredient' pk=recipe.pk %}" class="w3-button">Создать ингредиент</a>
+        </div>
+    </main>
+    {% include 'recipe_catalog/includes/footer.html' %}
+</body>
 </html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Создание нового ингредиента">
+    <title>ChefPro - Создание ингредиента</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <script type="text/javascript" src="http://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=tnUpasWOwlwisIXz801B2PFG7C6t8_NVB-lNU_dzanPstzje4ufxh4A7UjqoQweaCBevKGQm3gR2vpE83rQ8rc2b7kBaXemK5LXJF-CKL2w" charset="UTF-8"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: calc(100vh - 175px);
+        }
+
+        .w3-bar-item.active {
+            background-color: #FF8811;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #444;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+
+        .form-container h1 {
+            text-align: center;
+            color: #FF8811;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .ingredient-select, .ingredient-quantity {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .ingredient-select {
+            max-width: 200px;
+            width: 100%;
+        }
+
+        .ingredient-quantity {
+            width: 60px;
+            padding: 5px;
+            margin-left: 10px;
+        }
+
+        .form-container .w3-button {
+            background-color: #FF8811;
+            margin-bottom: 10px;
+            color: white;
+            width: 100%;
+        }
+
+        .form-container .w3-button:hover {
+            color: #FFFFFF !important;
+            background-color: #f44336 !important;
+        }
+
+        .form-container input, .form-container select {
+            background-color: #333;
+            color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+        }
+
+        .form-container input[type="number"] {
+            max-width: 100px;
+        }
+
+        .form-container select {
+            max-width: 520px;
+        }
+
+    </style>
+</head>
+<body class="w3-dark-gray">
+    <header class="w3-container w3-green w3-top" style="border-bottom: 1px solid white; height: 105px;">
+    <h2><b>ChefPro</b></h2>
+    <nav class="w3-bar">
+        <a class="w3-bar-item w3-button w3-hover-red " href="/">Главная страница</a>
+        <a class="w3-bar-item w3-button w3-hover-red " href="/about/">О сайте</a>
+
+        <a href="/logout/" class="w3-bar-item w3-button w3-hover-red w3-right">Выйти</a>
+
+    </nav>
+</header>
+
+    <main class="w3-padding" style="margin-top: 105px; margin-bottom: 70px;">
+        <div class="form-container">
+            <h1>Создать новый ингредиент для рецепта: Карбонара</h1>
+
+            <form method="POST" action="{% url 'create_ingredient' pk=recipe.pk %}">
+    {% csrf_token %}
+
+                <!-- Добавляем класс .form-group к p элементам -->
+                <p class="form-group">
+                    <label for="id_name">Название:</label>
+                    <input type="text" name="name" maxlength="255" required id="id_name">
+                </p>
+
+                <p class="form-group">
+                    <label for="id_unit">Единица измерения:</label>
+                    <select name="unit" id="id_unit">
+                        <option value="g" selected>граммы</option>
+                        <option value="ml">миллилитры</option>
+                        <option value="pcs">штуки</option>
+                        <option value="tsp">чайные ложки</option>
+                        <option value="tbsp">столовые ложки</option>
+                    </select>
+                </p>
+
+                <p class="form-group">
+                    <label for="id_grams_per_unit">Грамм на единицу измерения:</label>
+                    <input type="number" name="grams_per_unit" step="any" required id="id_grams_per_unit">
+                </p>
+
+                <p class="form-group">
+                    <label for="id_additional_quantity">Количество:</label>
+                    <input type="number" name="additional_quantity" value="1" id="id_additional_quantity">
+                </p>
+
+                <p class="form-group">
+                    <label for="id_raw_weight">Сырой вес, г:</label>
+                    <input type="number" name="raw_weight" value="0" step="any" id="id_raw_weight">
+                </p>
+
+                <p class="form-group">
+                    <label for="id_weight">Вес после обработки, г:</label>
+                    <input type="number" name="weight" value="0" step="any" id="id_weight">
+                </p>
+
+                <p class="form-group">
+                    <label for="id_cost">Стоимость, руб:</label>
+                    <input type="number" name="cost" step="any" required id="id_cost">
+                </p>
+
+                <p class="form-group">
+                    <label for="id_calorific">Калорийность (на 100 г), ккал:</label>
+                    <input type="number" name="calorific" step="any" required id="id_calorific">
+                </p>
+
+                <p class="form-group">
+                    <label for="id_quantity_0">Количество:</label>
+                    <input type="number" name="quantity_0" value="1" min="1" required id="id_quantity_0">
+                </p>
+
+                <div class="form-group">
+                    <button type="submit" class="w3-button">Создать ингредиент</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="w3-container w3-center w3-bottom w3-green" style="border-top: 1px solid white; height: 70px;">
+        <br>2024 (copyright)
+        <br><br>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function toggleFields() {
+                const unitSelect = document.getElementById('id_unit');
+
+                // Проверка существования элемента unitSelect
+                if (!unitSelect) {
+                    console.error('Элемент с id="id_unit" не найден');
+                    return;
+                }
+
+                const unit = unitSelect.value;
+
+                // Получаем элементы с помощью id
+                const rawWeightField = document.getElementById('id_raw_weight');
+                const weightField = document.getElementById('id_weight');
+                const gramsPerUnitField = document.getElementById('id_grams_per_unit');
+                const additionalQuantityField = document.getElementById('id_additional_quantity');
+
+                // Проверка наличия элементов
+                if (!rawWeightField || !weightField || !gramsPerUnitField || !additionalQuantityField) {
+                    console.log('Одно из полей не найдено');
+                    return;
+                }
+
+                // Логика скрытия/показа полей в зависимости от выбранной единицы измерения
+                if (unit === 'g') {
+                    // Если выбраны граммы
+                    rawWeightField.closest('.form-group').style.display = 'block';
+                    weightField.closest('.form-group').style.display = 'block';
+                    gramsPerUnitField.closest('.form-group').style.display = 'none';
+                    additionalQuantityField.closest('.form-group').style.display = 'none';
+                    gramsPerUnitField.value = 1;  // Устанавливаем значение для граммов
+                } else {
+                    // Если выбрана другая единица измерения
+                    rawWeightField.closest('.form-group').style.display = 'none';
+                    weightField.closest('.form-group').style.display = 'none';
+                    gramsPerUnitField.closest('.form-group').style.display = 'block';
+                    additionalQuantityField.closest('.form-group').style.display = 'block';
+                }
+            }
+
+            // Вызов функции для начальной настройки
+            toggleFields();
+
+            // Слушаем изменения выбора в поле unit
+            const unitSelect = document.getElementById('id_unit');
+            if (unitSelect) {
+                unitSelect.addEventListener('change', function () {
+                    toggleFields();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
